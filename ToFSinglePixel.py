@@ -25,27 +25,26 @@ N = 10000
 # (ModFs,DemodFs) = CodingFunctions.GetMultiFreqCosK5(N = N)
 
 #################### Coding Function and Scene Parameters
-sourceExponent = 15
-ambientExponent = 12
+sourceExponent = 9
+ambientExponent = 6
 #### Global parameters
 speedOfLight = 299792458. * 1000. # mm / sec 
 #### Sensor parameters
 T = 0.1 # Integration time. Exposure time in seconds
 readNoise = 20 # Standard deviation in photo-electrons
-nPixels = 1e6 # Total number of pixels
 #### Coding function parameters
 dMax = 10000 # maximum depth
 fMax = speedOfLight/(2*float(dMax)) # Maximum unambiguous repetition frequency (in Hz)
 tauMin = 1./fMax
 fSampling = float(dMax)*fMax # Sampling frequency of mod and demod functuion
 dt = tauMin/float(N)
-pAveSource = np.power(10, sourceExponent) # Source power. Avg number of photons emitted by the light source per second. 
-pAveSourcePerPixel = pAveSource/nPixels # Avg number of photons arriving to each pixel per second. If all light is reflected back.
+pAveSourcePerPixel = np.power(10, sourceExponent) # Source power. Avg number of photons emitted by the light source per second. 
+# pAveSourcePerPixel = pAveSource/nPixels # Avg number of photons arriving to each pixel per second. If all light is reflected back.
 freq = fMax # Fundamental frequency of modulation and demodulation functions
 tau = 1/freq
 #### Scene parameters
-pAveAmbient = np.power(10, ambientExponent) # Ambient light power. Avg number of photons per second due to ambient light sources
-pAveAmbientPerPixel = pAveAmbient/nPixels # Avg # of photons per second arriving to each pixel
+pAveAmbientPerPixel = np.power(10, ambientExponent) # Ambient light power. Avg number of photons per second due to ambient light sources
+# pAveAmbientPerPixel = pAveAmbient/nPixels # Avg # of photons per second arriving to each pixel
 meanBeta = 1e-4 # Avg fraction of photons reflected from a scene points back to the detector
 #### Camera gain parameter
 ## The following bound is found by assuming the max brightness value is obtained when demod is 1. 
