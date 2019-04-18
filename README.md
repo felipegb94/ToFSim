@@ -6,6 +6,16 @@ The simulation code assumes that there is not multi-path interference.
 
 The script `ToFSinglePixel.py` does the brightness measurements calculations, adds noise, and computes depths. If you want to simulate an entire scene you can modify the variable `depth` and change it to a list of depths associated to each point in the scene. Make sure that the depths of the scene are within the unambigous depth range of your functions (see `dMax` variable in the script). You can control the signal-to-noise-ratio (SNR) of the scene by varying: source average power (`pAveSourcePerPixel`), ambient average power (`pAveAmbientPerPixel`), mean albedo/reflectivity (`meanBeta`), integration/exposure time (`T`). 
 
+The script `VisualizeCodingScheme.py` plots the modulation, demodulation, and correlation functions for a given coding scheme.  
+
+### References
+
+If you use this code please make sure that you cite the following papers:
+
+* *Practical Coding Function Design for Time-of-Flight Imaging*. Felipe Gutierrez-Barragan, Syed Azer Reza, Andreas Velten, Mohit Gupta. To Appear in CVPR 2019.
+
+* *What are the Optimal Coding Functions for Time-of-Flight Imaging?*. Mohit Gupta, S Nayar, A Velten, Eric Breitbach. ACM TOG, presented at SIGGRAPH 2018.
+
 ### Python Environment Setup
 
 Follow the steps in this section to setup an anaconda virtual environment that contains all the required dependencies/libraries to run the code in this repository.
@@ -29,3 +39,5 @@ Follow the steps in this section to setup an anaconda virtual environment that c
 This command will setup the exact same conda environment we are currently using with all library versions being the same.
 
 For more details on how to manage a conda environment take a look at this webpage: [Managing Conda Environment](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#sharing-an-environment).
+
+
