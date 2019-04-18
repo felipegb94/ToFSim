@@ -4,9 +4,7 @@ Simulation Engine for Time-of-Flight Imaging.
 
 The simulation code assumes that there is not multi-path interference. 
 
-Given a ground truth depth or depth map and the location of the ToF sensor with respect to the depth map, this code calculates the brightness measurements that are obtained with a given coding scheme. The `Decoding.py` file can take the brightness images and output the depth for each point. 
-
-The script `ToFSinglePixel.py` does the brightness measurements calculations, adds noise, and computes depths. If you want to simulate an entire scene you can modify the variable `depth` and change it to a list of depths associated to each point in the scene. Make sure that the depths of the scene are within the unambigous depth range of your functions (see `dMax` variable in the script). You can control the SNR of the scene by varying: source average power (`pAveSourcePerPixel`), ambient average power (`pAveAmbientPerPixel`), mean albedo/reflectivity (`meanBeta`), integration/exposure time (`T`). 
+The script `ToFSinglePixel.py` does the brightness measurements calculations, adds noise, and computes depths. If you want to simulate an entire scene you can modify the variable `depth` and change it to a list of depths associated to each point in the scene. Make sure that the depths of the scene are within the unambigous depth range of your functions (see `dMax` variable in the script). You can control the signal-to-noise-ratio (SNR) of the scene by varying: source average power (`pAveSourcePerPixel`), ambient average power (`pAveAmbientPerPixel`), mean albedo/reflectivity (`meanBeta`), integration/exposure time (`T`). 
 
 ### Python Environment Setup
 
