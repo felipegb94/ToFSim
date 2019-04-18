@@ -3,6 +3,7 @@ import math
 #### Library imports
 import numpy as np
 import scipy as sp
+from scipy import stats
 from scipy import fftpack 
 from scipy import signal
 from scipy import linalg
@@ -32,6 +33,28 @@ def ScaleAreaUnderCurve(x, dx=0., desiredArea=1.):
 	y = x*desiredArea/oldArea
 	#### Return scaled vector
 	return y 
+
+
+def ScaleMod(ModFs, tau=1., pAveSource=1.):
+	"""ScaleMod: Scale modulation appropriately given the beta of the scene point, the average
+	source power and the repetition frequency.
+	
+	Args:
+	    ModFs (np.ndarray): N x K matrix. N samples, K modulation functions
+	    tau (float): Repetition frequency of ModFs 
+	    pAveSource (float): Average power emitted by the source 
+	    beta (float): Average reflectivity of scene point
+
+	Returns:
+	    np.array: ModFs 
+	"""
+	(N,K) = ModFs.shape
+	dt = tau / float(N)
+	eTotal = tau*pAveSource # Total Energy
+	for i in range(0,K): 
+		ModFs[:,i] = ScaleAreaUnderCurve(x=ModFs[:,i], dx=dt, desiredArea=eTotal)
+
+	return ModFs
 
 
 def ApplyKPhaseShifts(x, shifts):
@@ -91,3 +114,52 @@ def NormalizeBrightnessVals(BVals):
 	# Transpose it again so that it has dims NxK
 	NormBVals = NormBVals.transpose()
 	return NormBVals
+
+
+def ComputeBrightnessVals(ModFs, DemodFs, depths=None, pAmbient=0, beta=1, T=1, tau=1, dt=1, gamma=1):
+	"""ComputeBrightnessVals: Computes the brightness values for each possible depth.
+	
+	Args:
+	    ModFs (np.ndarray): N x K matrix. N samples, K modulation functions
+	    DemodFs (np.ndarray): N x K matrix. N samples, K demodulation functions
+	    tau (float): Repetitiion period of ModFs and DemodFs
+	    pAmbient (float): Average power of the ambient illumination component
+	    beta (float): Reflectivity to be used
+	    T (float): 
+	Returns:
+	    np.array: ModFs 
+	"""
+	(N,K) = ModFs.shape
+	if(depths is None): depths = np.arange(0, N, 1)
+	depths = np.round(depths)
+	## Calculate correlation functions (integral over 1 period of m(t-phi)*d(t)) for all phi
+	CorrFs = GetCorrelationFunctions(ModFs,DemodFs,dt=dt)
+	## Calculate the integral of the demodulation function over 1 period
+	kappas = np.sum(DemodFs,0)*dt
+	## Calculate brightness values
+	BVals = (gamma*beta)*(T/tau)*(CorrFs + pAmbient*kappas)
+	## Return only the brightness vals for the specified depths
+	BVals = BVals[depths,:]
+
+	return (BVals)
+
+def GetClippedBSamples(nSamples, BMean, BVar):
+	"""GetClippedBSamples: Draw N brightness samples from the truncated multivariate gaussian dist 
+	with mean BVal and Covariance Sigma=diag(NoiseVar)
+	Args:
+	    nSamples (int): Number of samples to draw.
+	    BMean (np.ndarray): 1 x K array. 
+	    BVar (np.ndarray): 1 x K array. 
+	Returns:
+	    BSampels (np.ndarray): nSamples x K array.  
+	"""
+	K = BMean.size
+	lower, upper = 0, 1
+	MultNormDist = stats.multivariate_normal(mean=BMean,cov=np.diag(BVar))
+
+	BSamples = MultNormDist.rvs(nSamples)
+	BSamples[BSamples<0]=lower
+	BSamples[BSamples>1]=upper
+
+
+	return (BSamples)
