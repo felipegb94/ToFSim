@@ -116,7 +116,6 @@ def NormalizeBrightnessVals(b_vals):
 
 	return normb_vals
 
-
 def ComputeBrightnessVals(ModFs, DemodFs, depths=None, pAmbient=0, beta=1, T=1, tau=1, dt=1, gamma=1):
 	"""ComputeBrightnessVals: Computes the brightness values for each possible depth.
 	

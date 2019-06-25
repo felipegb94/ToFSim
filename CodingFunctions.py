@@ -201,3 +201,31 @@ def GetMultiFreqCosK5(N=1000, highFreqFactor=7.):
 
 	#### Smooth the High Freq terms
 	return (ModFs,DemodFs)
+
+def GetMultiFreqCos( N = 1000, freq_factors = [1., 5.], phase_shifts = [0, 0], two_bucket = True  ):
+	#### Allocate matrices for coding functions
+	n_freqs = len(freq_factors)
+	assert ( n_freqs == len(phase_shifts) ), "Error GetMultiFreqCos: number of freq_factors elements needs to equal number of phase_shifts elements."
+	K = (1+int(two_bucket))*n_freqs # if two_bucket K = 2*n_freqs, else K = n_freqs
+	modfs = np.zeros((N,K))
+	demodfs = np.zeros((N,K))
+	t = np.linspace(0, 2*np.pi, N)
+	####
+	for i in range(n_freqs):
+		curr_k = i*(two_bucket+1)
+		freq_factor = freq_factors[i]
+		phase_shift = phase_shifts[i]
+
+		cosf = 0.5 + (0.5*np.cos(freq_factor*t))
+		cosf_shifted = 0.5 + (0.5*np.cos(freq_factor*t + phase_shift))
+		cosf180 = np.roll(cosf, int((N / 2.) / freq_factor) ) 
+		cosf180_shifted = np.roll(cosf_shifted, int((N / 2.) / freq_factor) ) 
+
+		modfs[:, curr_k] = cosf
+		demodfs[:, curr_k] = cosf_shifted
+		if( two_bucket ):
+			modfs[:, curr_k + 1] = cosf
+			demodfs[:, curr_k + 1] = cosf180_shifted
+
+	
+	return (modfs, demodfs)
