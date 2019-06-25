@@ -12,7 +12,7 @@ The script `VisualizeCodingScheme.py` plots the modulation, demodulation, and co
 
 If you use this code please make sure that you cite the following papers:
 
-* *Practical Coding Function Design for Time-of-Flight Imaging*. Felipe Gutierrez-Barragan, Syed Azer Reza, Andreas Velten, Mohit Gupta. To Appear in CVPR 2019.
+* *Practical Coding Function Design for Time-of-Flight Imaging*. Felipe Gutierrez-Barragan, Syed Azer Reza, Andreas Velten, Mohit Gupta. CVPR 2019.
 
 * *What are the Optimal Coding Functions for Time-of-Flight Imaging?*. Mohit Gupta, S Nayar, A Velten, Eric Breitbach. ACM TOG, presented at SIGGRAPH 2018.
 
