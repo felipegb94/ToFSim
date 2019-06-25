@@ -3,8 +3,6 @@ import math
 
 #### Library imports
 import numpy as np
-import scipy as sp
-from scipy import signal
 # from IPython.core import debugger
 # breakpoint = debugger.set_trace
 

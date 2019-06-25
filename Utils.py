@@ -1,13 +1,9 @@
 #### Python imports
-import math
 #### Library imports
 import numpy as np
-import scipy as sp
 from scipy import stats
-from scipy import fftpack 
-from scipy import signal
-from scipy import linalg
-from scipy import interpolate
+from IPython.core import debugger
+breakpoint = debugger.set_trace
 
 
 
@@ -108,12 +104,17 @@ def GetCorrelationFunctions(ModFs, DemodFs, dt=None):
 	return CorrFs
 
 
-def NormalizeBrightnessVals(BVals):
+def NormalizeBrightnessVals(b_vals):
+	"""
+		b_vals = n x k numpy matrix where each row corresponds to a set of k brightness measurements		
+		Note on implementation: The following implementation is faster than reshaping the mean/stdev data structures. 
+	"""
 	## Normalized correlation functions, zero mean, unit variance. We have to transpose so that broadcasting works.
-	NormBVals = (BVals.transpose() - np.mean(BVals, axis=1)) / np.std(BVals, axis=1) 
+	normb_vals = (b_vals.transpose() - np.mean(b_vals, axis=1)) / np.std(b_vals, axis=1) 
 	# Transpose it again so that it has dims NxK
-	NormBVals = NormBVals.transpose()
-	return NormBVals
+	normb_vals = normb_vals.transpose()
+
+	return normb_vals
 
 
 def ComputeBrightnessVals(ModFs, DemodFs, depths=None, pAmbient=0, beta=1, T=1, tau=1, dt=1, gamma=1):
@@ -139,7 +140,7 @@ def ComputeBrightnessVals(ModFs, DemodFs, depths=None, pAmbient=0, beta=1, T=1, 
 	## Calculate brightness values
 	BVals = (gamma*beta)*(T/tau)*(CorrFs + pAmbient*kappas)
 	## Return only the brightness vals for the specified depths
-	BVals = BVals[depths,:]
+	BVals = BVals[depths.astype(int),:]
 
 	return (BVals)
 

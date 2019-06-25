@@ -5,25 +5,30 @@ Decoding functions for time of flight coding schemes.
 
 #### Library imports
 import numpy as np
+from IPython.core import debugger
+breakpoint = debugger.set_trace
 
 #### Local imports
+import Utils
 
-def DecodeXCorr(BMeasurements, NormCorrFs):
+def DecodeXCorr(b_measurements, norm_corrfs):
 	"""DecodeXCorr: Generic decoding algorithm that performs a 1D search on the normalized 
 	correlation functions.
 	
 	Args:
-	    BMeasurements (np.ndarray): B x K matrix. B sets of K brightness measurements
-	    NormCorrFs (np.ndarray): N x K matrix. Normalized Correlation functions. Zero mean
+	    b_measurements (np.ndarray): B x K matrix. B sets of K brightness measurements
+	    norm_corrfs (np.ndarray): N x K matrix. Normalized Correlation functions. Zero mean
 	    unit variance.
 	Returns:
-	    np.array: decodedDepths 
+	    np.array: decoded_depths 
 	"""
+	(n_measurements, k) = b_measurements.shape
 	## Normalize Brightness Measurements functions
-	NormBMeasurements = (BMeasurements.transpose() - np.mean(BMeasurements, axis=1)) / np.std(BMeasurements, axis=1)
+	norm_b_measurements = Utils.NormalizeBrightnessVals(b_measurements)
+	breakpoint()
 	## Calculate the cross correlation for every measurement and the maximum one will be the depth
-	decodedDepths = np.zeros((NormBMeasurements.shape[1],))
-	for i in range(NormBMeasurements.shape[1]):
-		decodedDepths[i] = np.argmax(np.dot(NormCorrFs, NormBMeasurements[:,i]), axis=0)
+	decoded_depths = np.zeros((n_measurements,))
+	for i in range(n_measurements):
+		decoded_depths[i] = np.argmax(np.dot(norm_corrfs, norm_b_measurements[:,i]), axis=0)
 
-	return decodedDepths
+	return decoded_depths
