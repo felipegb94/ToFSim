@@ -103,6 +103,18 @@ def GetCorrelationFunctions(ModFs, DemodFs, dt=None):
 	CorrFs = CorrFs*dt	
 	return CorrFs
 
+def cconv( f1, f2 ):
+	"""Circular convolution: Calculate the circular convolution for vectors f1 and f2. f1 and f2 are the same size
+	
+	Args:
+		f1 (numpy.ndarray): Nx1 vector	
+		f2 (numpy.ndarray): Nx1 vector	
+	Returns:
+	    f1convf2 (numpy.ndarray): convolution result. N x 1 vector.
+	"""
+	f1convf2 = np.fft.ifft( np.fft.fft(f1) * np.fft.fft(f2) )
+	return f1convf2
+
 
 def NormalizeBrightnessVals(b_vals):
 	"""

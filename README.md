@@ -30,6 +30,14 @@ Follow the steps in this section to setup an anaconda virtual environment that c
 4. **Install libraries:** The code in this repository uses numpy, scipy, pandas, matplotlib, scikit-learn, and ipython (for development). To install all these dependencies run the following command:
 ```conda install numpy scipy matplotlib ipython pandas scikit-learn```
 
+5. **For Transient Simulation Only:** Install scikit-image
+```conda install -c conda-forge scikit-image```
+
+For scikit-image to work with almost any image format you want to make sure that you have `freeimage` installed in your machine. To install `freeimage` run:
+
+```sudo apt-get install libfreeimage-dev```
+
+
 **Note:** If directly installing the packages with the above commands does not work it is probably because different versions of the libraries were installed. If this happened remove the environment and start over with the following steps.
 
 1. Install miniconda and clone this repository.

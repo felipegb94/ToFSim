@@ -42,7 +42,9 @@ plotParams = {
 				'legend.shadow': True,
 				}
 
-mpl.use('Qt4Agg', warn=False) ## Needed to allow drawing with matplotlib during debug mode
+# Depending on which qt version is being used comment/uncomment the lines below
+# mpl.use('Qt4Agg', warn=False) ## Needed to allow drawing with matplotlib during debug mode
+mpl.use('Qt5Agg', warn=False) ## Needed to allow drawing with matplotlib during debug mode
 plt._INSTALL_FIG_OBSERVER = True
 
 mpl.rcParams.update(plotParams)
