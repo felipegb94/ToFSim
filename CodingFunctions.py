@@ -3,6 +3,7 @@ import math
 
 #### Library imports
 import numpy as np
+from scipy import signal
 # from IPython.core import debugger
 # breakpoint = debugger.set_trace
 
@@ -41,6 +42,41 @@ def GetCosCos(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
 		modFs[:,i] = Utils.ScaleAreaUnderCurve(modFs[:,i], dx=dt, desiredArea=totalEnergy)
 		## Apply phase shift to demodF
 		demodFs[:,i] = cosF
+	#### Apply phase shifts to demodF
+	shifts = np.arange(0, K)*(float(N)/float(K))
+	demodFs = Utils.ApplyKPhaseShifts(demodFs,shifts)
+	#### Return coding scheme
+	return (modFs, demodFs)
+
+
+def GetSqSq(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
+	"""GetCosCos: Get modulation and demodulation functions for sinusoid coding scheme. The shift
+	between each demod function is 2*pi/k where k can be [3,4,5...]
+	
+	Args:
+		N (int): N - Number of Samples
+		k (int): k - Number of coding function
+		freqFactor (float): Multiplicative factor to the fundamental frequency we want to use.
+
+	Returns:
+		np.array: modFs 
+		np.array: demodFs 
+	"""
+	#### Allocate modulation and demodulation vectors
+	modFs = np.zeros((N,K))
+	demodFs = np.zeros((N,K))
+	t = np.linspace(0, 2*np.pi, N)
+	dt = float(tau) / float(N)
+	#### Declare base sin function
+	sqF = (0.5*signal.square(t)) + 0.5
+	#### Set each mod/demod pair to its base function and scale modulations
+	for i in range(0,K):
+		## No need to apply phase shift to modF
+		modFs[:,i] = sqF
+		## Scale  modF so that area matches the total energy
+		modFs[:,i] = Utils.ScaleAreaUnderCurve(modFs[:,i], dx=dt, desiredArea=totalEnergy)
+		## Apply phase shift to demodF
+		demodFs[:,i] = sqF
 	#### Apply phase shifts to demodF
 	shifts = np.arange(0, K)*(float(N)/float(K))
 	demodFs = Utils.ApplyKPhaseShifts(demodFs,shifts)

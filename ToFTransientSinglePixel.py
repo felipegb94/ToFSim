@@ -19,12 +19,12 @@ dr = 5 # Time resolution of transient renderer in milimeters
 dt = 5 / c # Time resolution of transient renderer in milimeters
 pixel_id = 100
 file_path = '/home/user/repos/ece901/project/hdr_bedroom3_view_6/'
-file_name = 'img_0080.hdr'
+file_name = 'img_0090.hdr'
 hdr_data = imread(file_path + file_name)
 (n_pixels, n_timebins, _) = hdr_data.shape
 impulse_response = np.asarray(hdr_data[pixel_id, :, 1])
 #################### Set Coding Function Parameters
-freq = 40e6 # 10 mhz
+freq = 10e6 # 10 mhz
 tau = 1 / freq # in seconds
 N = round(tau / dt)
 max_depth = c*tau / 2.
@@ -32,10 +32,14 @@ depths = np.linspace(0, max_depth, N)
 #################### Get coding functions with average power = 1
 K = 3
 # (modfs,demodfs) = CodingFunctions.GetCosCos(N = N, K = K)
-(modfs,demodfs) = CodingFunctions.GetHamK3(N = N)
+(emitted_modfs,emitted_demodfs) = CodingFunctions.GetSqSq(N = N, K = K)
+# (modfs,demodfs) = CodingFunctions.GetHamK3(N = N)
 # (modfs,demodfs) = CodingFunctions.GetHamK4(N = N)
 # (modfs,demodfs) = CodingFunctions.GetHamK5(N = N)
 # (modfs,demodfs) = CodingFunctions.GetMultiFreqCosK5(N = N)
+
+(modfs,demodfs) = Utils.SmoothCodes(emitted_modfs,emitted_demodfs, window_duty=0.25)
+
 #################### Get correlation function
 
 #################### Get steady state response through circular convolution
@@ -72,10 +76,22 @@ for i in range(K):
     # breakpoint()
 from UtilsPlot import *
 plt.clf()
-# plt.plot(modfs[:,0])
-# plt.plot(modfs_response[:,0]*10)
-# plt.plot(modfs_direct_response*100)
-plt.plot(impulse_response*250)
+# plt.plot(impulse_response*75, color='#E24A33')
+# plt.plot(emitted_modfs[:,0], color='#348ABD')
+# plt.plot(modfs[:,0], color='#988ED5')
+# plt.plot(modfs_direct_response[:,0]*20 + 0.25, color='#8EBA42')
+
+
+# plt.plot(modfs_response[:,0]*8  + 0.3, color='#FBC15E')
+
+
+plt.plot(emitted_demodfs[:,0], color='#777777')
+plt.plot(demodfs[:,0], color='#E24A33')
+
+
+
+# Out[20]: ['#E24A33', '#348ABD', '#988ED5', '#777777', '#FBC15E', '#8EBA42', '#FFB5B8']
+
 #################### Coding Function and Scene Parameters
 # sourceExponent = 9
 # ambientExponent = 6
