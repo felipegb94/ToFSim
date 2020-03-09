@@ -3,6 +3,7 @@ import math
 
 #### Library imports
 import numpy as np
+from scipy import signal
 # from IPython.core import debugger
 # breakpoint = debugger.set_trace
 
@@ -13,7 +14,7 @@ TotalEnergyDefault = 1.
 TauDefault = 1.
 AveragePowerDefault = TotalEnergyDefault / TauDefault
 
-def GetCosCos(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
+def GetCosCos(N=1000, K=4):
 	"""GetCosCos: Get modulation and demodulation functions for sinusoid coding scheme. The shift
 	between each demod function is 2*pi/k where k can be [3,4,5...]
 	
@@ -30,7 +31,7 @@ def GetCosCos(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
 	modFs = np.zeros((N,K))
 	demodFs = np.zeros((N,K))
 	t = np.linspace(0, 2*np.pi, N)
-	dt = float(tau) / float(N)
+	dt = float(TauDefault) / float(N)
 	#### Declare base sin function
 	cosF = (0.5*np.cos(t)) + 0.5
 	#### Set each mod/demod pair to its base function and scale modulations
@@ -38,7 +39,7 @@ def GetCosCos(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
 		## No need to apply phase shift to modF
 		modFs[:,i] = cosF
 		## Scale  modF so that area matches the total energy
-		modFs[:,i] = Utils.ScaleAreaUnderCurve(modFs[:,i], dx=dt, desiredArea=totalEnergy)
+		modFs[:,i] = Utils.ScaleAreaUnderCurve(modFs[:,i], dx=dt, desiredArea=TotalEnergyDefault)
 		## Apply phase shift to demodF
 		demodFs[:,i] = cosF
 	#### Apply phase shifts to demodF
@@ -47,6 +48,39 @@ def GetCosCos(N=1000, K=3, tau=TauDefault, totalEnergy=TotalEnergyDefault):
 	#### Return coding scheme
 	return (modFs, demodFs)
 
+def GetSqSq(N=1000, K=4):
+	"""GetSqSq: Get modulation and demodulation functions for square coding scheme. The shift
+	between each demod function is 2*pi/k where k can be [3,4,5...]. 
+	
+	Args:
+	    N (int): Number of discrete points in the scheme
+	    k (int): Number of mod/demod function pairs
+	    0.5
+	
+	Returns:
+	    np.array: modFs 
+	    np.array: demodFs 
+	"""
+	#### Allocate modulation and demodulation vectors
+	modFs = np.zeros((N,K))
+	demodFs = np.zeros((N,K))
+	t = np.linspace(0, 2*np.pi, N)
+	dt = float(TauDefault) / float(N)
+	#### Declare base sin function
+	sqF = (0.5*signal.square(t, duty=0.5)) + 0.5
+	#### Set each mod/demod pair to its base function and scale modulations
+	for i in range(0,K):
+		## No need to apply phase shift to modF
+		modFs[:,i] = sqF
+		## Scale  modF so that area matches the total energy
+		modFs[:,i] = Utils.ScaleAreaUnderCurve(modFs[:,i], dx=dt, desiredArea=TotalEnergyDefault)
+		## Apply phase shift to demodF
+		demodFs[:,i] = sqF
+	#### Apply phase shifts to demodF
+	shifts = np.arange(0, K)*(float(N)/float(K))
+	demodFs = Utils.ApplyKPhaseShifts(demodFs,shifts)
+	#### Return coding scheme
+	return (modFs, demodFs)
 
 def GetHamK3(N=1000):
 	"""GetHamK3: Get modulation and demodulation functions for the coding scheme

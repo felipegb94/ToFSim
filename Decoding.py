@@ -25,10 +25,7 @@ def DecodeXCorr(b_measurements, norm_corrfs):
 	(n_measurements, k) = b_measurements.shape
 	## Normalize Brightness Measurements functions
 	norm_b_measurements = Utils.NormalizeBrightnessVals(b_measurements)
-	breakpoint()
 	## Calculate the cross correlation for every measurement and the maximum one will be the depth
-	decoded_depths = np.zeros((n_measurements,))
-	for i in range(n_measurements):
-		decoded_depths[i] = np.argmax(np.dot(norm_corrfs, norm_b_measurements[:,i]), axis=0)
+	decoded_depths = np.argmax(np.dot(norm_corrfs, norm_b_measurements.transpose()), axis=0)
 
 	return decoded_depths

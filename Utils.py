@@ -104,17 +104,14 @@ def GetCorrelationFunctions(ModFs, DemodFs, dt=None):
 	return CorrFs
 
 
-def NormalizeBrightnessVals(b_vals):
+def NormalizeBrightnessVals(b_vals, axis=-1):
 	"""
 		b_vals = n x k numpy matrix where each row corresponds to a set of k brightness measurements		
-		Note on implementation: The following implementation is faster than reshaping the mean/stdev data structures. 
 	"""
 	## Normalized correlation functions, zero mean, unit variance. We have to transpose so that broadcasting works.
-	normb_vals = (b_vals.transpose() - np.mean(b_vals, axis=1)) / np.std(b_vals, axis=1) 
-	# Transpose it again so that it has dims NxK
-	normb_vals = normb_vals.transpose()
+	norm_bvals = (b_vals - np.mean(b_vals, axis=axis, keepdims=True)) / np.std(b_vals, axis=axis, keepdims=True) 
 
-	return normb_vals
+	return norm_bvals
 
 
 def ComputeBrightnessVals(ModFs, DemodFs, depths=None, pAmbient=0, beta=1, T=1, tau=1, dt=1, gamma=1):
