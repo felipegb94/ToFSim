@@ -24,7 +24,8 @@
 
 	To reproduce Figure 4 of 
 	http://openaccess.thecvf.com/content_CVPR_2019/papers/Gutierrez-Barragan_Practical_Coding_Function_Design_for_Time-Of-Flight_Imaging_CVPR_2019_paper.pdf
-	you need to run this script with various compinations of sourceExponent and ambientExponent
+	you need to run this script with various compinations of sourceExponent and ambientExponent. The range that we used for those paramters in those figures was
+	around sourceExponent = [7 to 9], ambientExponent = [6 to 9]
 '''
 
 # Python imports
@@ -45,7 +46,7 @@ import Decoding
 
 #################### Set Function Parameters
 N = 10000
-dSample = 75
+dSample = 200
 nMonteCarloSamples = 5000
 
 #################### Get coding functions with total energy = 1
@@ -53,13 +54,13 @@ nMonteCarloSamples = 5000
 # (ModFs,DemodFs) = CodingFunctions.GetSqSq(N = N, K = 4)
 (ModFs,DemodFs) = CodingFunctions.GetHamK3(N = N)
 # (ModFs,DemodFs) = CodingFunctions.GetHamK4(N = N)
-# (ModFs,DemodFs) = CodingFunctions.GetHamK5(N = N)
+(ModFs,DemodFs) = CodingFunctions.GetHamK5(N = N)
 # (ModFs,DemodFs) = CodingFunctions.GetMultiFreqCosK5(N = N)
 (_, K) = ModFs.shape
 
 #################### Coding Function and Scene Parameters
-sourceExponent = 9
-ambientExponent = 6
+sourceExponent = 8
+ambientExponent = 8
 #### Global parameters
 speedOfLight = 299792458. * 1000. # mm / sec 
 #### Sensor parameters
